@@ -30,12 +30,12 @@ struct MainView: View {
                     .gesture(
                         DragGesture()
                             .onChanged({val in
-                                // 如果val大于 50 就进入页面滑动模式
+                                // into "offset" when gesture's translation Y Delta data > 50
                                 if val.translation.animatableData.second > 50 {
                                     mainViewStateModel.viewOffsetY = val.translation.animatableData.second
-                                    // 给予背景模糊量数据
+                                    // math background blur
                                     mainViewStateModel.blurRadius = 5 * (UIScreen.main.bounds.height - val.translation.animatableData.second) / UIScreen.main.bounds.height
-                                    // 计算切角
+                                    // math cornerRadius
                                     if val.translation.animatableData.second < 300 {
                                         withAnimation(.linear) {
                                             mainViewStateModel.cornerRadius = val.translation.animatableData.second / 300 * 30
@@ -51,7 +51,7 @@ struct MainView: View {
                                 withAnimation(.linear){
                                     mainViewStateModel.blurRadius = 0
                                 }
-                                // 滑动结束时 y轴滑动距离大于100给予关闭 （并清零记录的y轴移动量避免下次打开页面时位置错误）
+                                // When "onEnded", if (offsetY > 100) -> View Close; otherwise still show current View.
                                 if val.translation.animatableData.second > 100 || mainViewStateModel.viewOffsetY > (UIScreen.main.bounds.height * 0.35){
                                     withAnimation(.easeInOut){
                                         mainViewStateModel.viewOffsetY = UIScreen.main.bounds.height
